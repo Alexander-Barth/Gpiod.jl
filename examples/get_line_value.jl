@@ -56,7 +56,7 @@ offset = Cuint(16); # GPIO 16, Board 36
 request = setup(offset)
 
 while true
-    value = gpiod_line_request_get_value(request, offset[]);
+    value = gpiod_line_request_get_value(request, offset);
     @show value
     sleep(1)
 end
