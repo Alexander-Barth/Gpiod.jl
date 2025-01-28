@@ -7,6 +7,8 @@ using Gpiod.LibGpiod
 
 const INPUT = LibGpiod.GPIOD_LINE_DIRECTION_INPUT
 const OUTPUT = LibGpiod.GPIOD_LINE_DIRECTION_OUTPUT
+const LOW = false
+const HIGH = true
 
 struct Pi
     chip_path::String
