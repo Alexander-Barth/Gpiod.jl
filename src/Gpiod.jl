@@ -1,6 +1,6 @@
 module Gpiod
 
-import Base: read
+import Base: read, write
 include("LibGpiod.jl")
 
 using Gpiod.LibGpiod
@@ -21,7 +21,6 @@ function Pi(;chip_path = "/dev/gpiochip0",
 end
 
 function setup(pi::Pi,offset,mode)
-    
     chip = gpiod_chip_open(pi.chip_path);
 
     settings = gpiod_line_settings_new();
@@ -38,13 +37,13 @@ function setup(pi::Pi,offset,mode)
         return
     end
 
-    ret = gpiod_line_config_add_line_settings(line_cfg, [offset], 1,
+    ret = gpiod_line_config_add_line_settings(line_cfg, [Cuint(offset)], 1,
 						  settings);
     if (ret != 0)
         gpiod_line_config_free(line_cfg);
         return
     end
-    
+
     req_cfg = gpiod_request_config_new();
     if (req_cfg == C_NULL)
 	gpiod_line_config_free(line_cfg);
@@ -58,8 +57,21 @@ function setup(pi::Pi,offset,mode)
     gpiod_line_settings_free(settings);
     gpiod_chip_close(chip);
 
-    pi.request[offset] = request
-    return request
+    pi.request[Cuint(offset)] = request
+    return nothing
+end
+
+function Base.read(pi::Pi,offset)
+    request = pi.request[Cuint(offset)]
+    value = gpiod_line_request_get_value(request, offset);
+    return value == GPIOD_LINE_VALUE_ACTIVE
+end
+
+function Base.write(pi::Pi,offset,value::Bool)
+    request = pi.request[Cuint(offset)]
+    v = (value ? GPIOD_LINE_VALUE_ACTIVE : GPIOD_LINE_VALUE_INACTIVE)
+    gpiod_line_request_set_value(request, offset, v)
+    return nothing
 end
 
 end

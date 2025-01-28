@@ -3,4 +3,4 @@ library_name = "libgpiod"
 output_file_path = "./LibGpiod.jl"
 module_name = "LibGpiod"
 #jll_pkg_name = "Gpiod_jll"
-export_symbol_prefixes = ["GPIOD", "gpiod_"]
+export_symbol_prefixes = ["GPIOD_", "gpiod_"]

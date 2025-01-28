@@ -1,13 +1,12 @@
 using Gpiod: Pi, setup, INPUT
-using Gpiod: gpiod_line_request_get_value
 
-offset = Cuint(16); # GPIO 16, Board 36
+pin = 21; # GPIO 21, Board 40
 
 pi = Pi()
-request = setup(pi,offset,INPUT)
+setup(pi,pin,INPUT)
 
 while true
-    value = gpiod_line_request_get_value(request, offset);
+    value = read(pi,pin)
     @show value
     sleep(1)
 end
