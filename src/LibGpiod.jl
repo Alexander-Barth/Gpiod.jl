@@ -1,6 +1,6 @@
 module LibGpiod
 
-# hard-coding for now
+# hard-coded for now
 const libgpiod = "/home/pi/opt/libgpiod/lib/libgpiod.so"
 using CEnum
 
@@ -459,7 +459,7 @@ function gpiod_api_version()
 end
 
 # exports
-const PREFIXES = ["CX", "gpiod_"]
+const PREFIXES = ["GPIOD_", "gpiod_"]
 for name in names(@__MODULE__; all=true), prefix in PREFIXES
     if startswith(string(name), prefix)
         @eval export $name
