@@ -25,6 +25,12 @@ end
 function setup(pi::Pi,offset,mode)
     chip = gpiod_chip_open(pi.chip_path);
 
+    if haskey(pi.request,Cuint(offset))
+        @debug "releasing previous request for pin $offset"
+        request = pi.request[Cuint(offset)]
+        gpiod_line_request_release(request)
+    end
+
     settings = gpiod_line_settings_new();
     if (settings == C_NULL)
         gpiod_chip_close(chip);
@@ -54,6 +60,9 @@ function setup(pi::Pi,offset,mode)
 
     gpiod_request_config_set_consumer(req_cfg, pi.consumer);
     request = gpiod_chip_request_lines(chip, req_cfg, line_cfg);
+
+    @assert request != C_NULL
+
     gpiod_request_config_free(req_cfg);
     gpiod_line_config_free(line_cfg);
     gpiod_line_settings_free(settings);
